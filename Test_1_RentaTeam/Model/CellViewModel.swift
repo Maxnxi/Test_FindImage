@@ -11,12 +11,14 @@ import UIKit
 class CellViewModel {
     
     let image: UIImage
-    let metaInfo: String
-    let downloadDate: String
+    let id: String
+    let photoGrapherName: String
+    let downloadDate: Date
     
-    init(image: UIImage, metaInfo: String, downoladDate: String) {
+    init(image: UIImage, id: String, photoGrapherName: String, downoladDate: Date) {
         self.image = image
-        self.metaInfo = metaInfo
+        self.id = id
+        self.photoGrapherName = photoGrapherName
         self.downloadDate = downoladDate
     }
 }
