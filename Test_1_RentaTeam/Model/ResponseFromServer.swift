@@ -4,11 +4,9 @@
 //
 //  Created by Maksim Ponomarev on 09.11.2021.
 //
-//   let welcome = try? newJSONDecoder().decode(Welcome.self, from: jsonData)
 
 import Foundation
 
-// MARK: - Welcome
 struct ResponseFromServer: Codable {
     let page, perPage: Int
     let photos: [PhotoFromServer]

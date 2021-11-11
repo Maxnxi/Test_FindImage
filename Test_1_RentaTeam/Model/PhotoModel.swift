@@ -20,9 +20,9 @@ protocol PhotableModel {
 
 class PhotoModel: PhotableModel {
     
-    var id: Int //3408744,
-    var photographer: String //"stein egil liland",
-    var avgColor: String //"#557088",
+    var id: Int
+    var photographer: String
+    var avgColor: String
     var photoName: String
     var url: String //"https://images.pexels.com/photos/3408744/pexels-photo-3408744.jpeg?auto=compress&cs=tinysrgb&h=350"
     var dateOfDownloaded: Int?

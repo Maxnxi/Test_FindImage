@@ -11,11 +11,9 @@ class CheckOnlineStatusService {
     
     static let shared = CheckOnlineStatusService()
     
-    private init() {
-        
-    }
+    private init() { }
     
-    // make random
+    // make random fo fun
     func makeRandomServerString() -> String {
         let alphabetString = "abcdefghijklmnopqrstvwxyz"
         let randomLetter = alphabetString.randomElement()

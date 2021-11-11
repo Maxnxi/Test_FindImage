@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 class MainViewController: UIViewController {
     
     var pageOfImages: Int = 1
@@ -14,13 +15,12 @@ class MainViewController: UIViewController {
         didSet {
             print("Setted")
             DispatchQueue.main.async {
-                self.collectionView.reloadData()
-                
-//                Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
-//                    self?.collectionView.reloadData()
-//                }
+                let previousCount = oldValue.count
+                let newCount = self.photosCellViewModel.count
+                let intArr = Array(previousCount...newCount)
+                let indexPaths = intArr.map { IndexPath(row: $0, section: 0) }
+                self.collectionView.reloadItems(at: indexPaths)
             }
-            
         }
     }
     private let networkServices = NetworkServices()
@@ -28,12 +28,16 @@ class MainViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.delegate = self
         collectionView.dataSource = self
-        collectionView?.prefetchDataSource = self
         loadNewPhoto()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        RealmServices.shared.cleanAll()
     }
     
     func loadNewPhoto(page: Int = 1) {
@@ -43,7 +47,6 @@ class MainViewController: UIViewController {
             case .success(let photobaleModelArr):
                 guard let cellViewMArrBase = self?.photosCellViewModel else { return }
                 print("cellViewMArrBase.count is - ", cellViewMArrBase.count)
-                
                 PhotosInfoModelFactory.shared.convertPhotableModelToCellViewModel(photos: photobaleModelArr) { photos in
                     let tmpCellVMArr = cellViewMArrBase + photos
                     print("tmpCellVMArr.count is - ", tmpCellVMArr.count)
@@ -55,14 +58,6 @@ class MainViewController: UIViewController {
         }
     }
     
-}
-
-extension MainViewController: UICollectionViewDataSourcePrefetching {
-    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        print("Prefetch: \(indexPaths)")
-        loadNewPhoto(page: pageOfImages)
-        
-    }
 }
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
@@ -87,7 +82,10 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
+        let storyBoard = UIStoryboard(name: "Main", bundle: nil)
+        guard let viewController = storyBoard.instantiateViewController(withIdentifier: DetailVC.reuseIdentifierOfVC) as? DetailVC else { return }
+        viewController.cellViewModel = photosCellViewModel[indexPath.row]
+        self.present(viewController, animated: true, completion: nil)
     }
     
 }

@@ -78,13 +78,4 @@ class NetworkServices {
     
 }
 
-//MARK: -> AppError
-enum AppError: Error {
-    case noDataProvided
-    case failedToDecode
-    case errorTask
-    case notCorrectUrl
-    case guardError
-    case failToFullArrayWithCoordinates
-    case offlineAndNoDataDownloaded
-}
+

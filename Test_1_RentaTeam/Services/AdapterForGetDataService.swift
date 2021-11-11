@@ -36,7 +36,7 @@ class AdapterForGetDataService {
                             }
                             RealmServices.shared.saveImagesInfo(imagesInfo: photoInfosToRealm)
                         } else {
-                            
+                            print("RealmServices.shared.isPhotosInfoSaved == else - ", RealmServices.shared.isPhotosInfoSaved)
                         }
                         completion(.success(photosArr))
                     case .failure(let err):

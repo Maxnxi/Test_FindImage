@@ -18,16 +18,13 @@ class MainViewCell: UICollectionViewCell {
     @IBOutlet weak var backGroundView: UIView!
     
     func configureCell(viewModel: CellViewModel) {
-        
-        //let resizedImage = UIImage().resizeImage(image: viewModel.image, targetSize: CGSize(width: 150, height: 150))
-        
-        imageView.image = viewModel.image//resizedImage
+        let resizedImage = UIImage().resizeImage(image: viewModel.image, targetSize: CGSize(width: 150, height: 150))
+        imageView.image = resizedImage
         imageView.layer.cornerRadius = 20
         photoIdLabel.text = viewModel.id
         photoGrapherNameLabel.text = viewModel.photoGrapherName
         metaInfoView.layer.cornerRadius = 10
         backGroundView.layer.cornerRadius = 20
-        
     }
     
     override func prepareForReuse() {
@@ -35,7 +32,6 @@ class MainViewCell: UICollectionViewCell {
         imageView.image = nil
         photoIdLabel.text = ""
         photoGrapherNameLabel.text = ""
-        
     }
     
 }

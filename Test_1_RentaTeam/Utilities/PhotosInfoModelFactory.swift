@@ -40,16 +40,26 @@ class PhotosInfoModelFactory {
         return tmpPhotosOffModelArr
     }
     
-    func convertPhotableModelToCellViewModel(photos: [PhotableModel], completion: @escaping(_ modelArrays: [CellViewModel]) -> ())/* -> [CellViewModel]*/ {
+    func convertPhotableModelToCellViewModel(photos: [PhotableModel], completion: @escaping(_ modelArrays: [CellViewModel]) -> ()) {
         var tmpCellViewModel: [CellViewModel] = []
         
         photos.forEach { [weak self] photo in
             var imageTmp = UIImage()
             var dateOfDownloaded: Int = 0
+            
             if let image = photo.image {
                 print("convertPhotableModelToCellViewModel - image is here")
                 imageTmp = image
-                dateOfDownloaded = photo.dateOfDownloaded ?? 0
+                dateOfDownloaded = photo.dateOfDownloaded ?? -1
+                let idString = String(photo.id)
+                let dateDownloadString = String(dateOfDownloaded)
+                let cellViewModel = CellViewModel(image: imageTmp, id: idString, photoGrapherName: photo.photographer, downoladDate: dateDownloadString)
+                tmpCellViewModel.append(cellViewModel)
+                if tmpCellViewModel.count == photos.count {
+                    print("Completion in convertPhotableModelToCellViewModel")
+                    completion(tmpCellViewModel)
+                }
+                
             } else {
                 print("convertPhotableModelToCellViewModel - image is not here")
                 if let url = URL(string: photo.url) {
@@ -57,24 +67,22 @@ class PhotosInfoModelFactory {
                         print("Downloaded image - ", image.image)
                         imageTmp = image.image
                         dateOfDownloaded = Int(image.dateOfDownloaded.timeIntervalSince1970)
+                        // bug here
+                        let idString = String(photo.id)
+                        let dateDownloadString = String(dateOfDownloaded)
+                        let cellViewModel = CellViewModel(image: imageTmp, id: idString, photoGrapherName: photo.photographer, downoladDate: dateDownloadString)
+                        tmpCellViewModel.append(cellViewModel)
+                        if tmpCellViewModel.count == photos.count {
+                            print("Completion in convertPhotableModelToCellViewModel")
+                            completion(tmpCellViewModel)
+                        }
                     }
                 } else {
                     // todo smth if url failed
                     print("todo smth if url failed")
                 }
             }
-            let idString = String(photo.id)
-            let dateDownloadString = String(dateOfDownloaded)
-            //todo
-            
-            let cellViewModel = CellViewModel(image: imageTmp, id: idString, photoGrapherName: photo.photographer, downoladDate: dateDownloadString)
-            tmpCellViewModel.append(cellViewModel)
         }
-        
-        if tmpCellViewModel.count == photos.count {
-            completion(tmpCellViewModel)
-        }
-        //return tmpCellViewModel
     }
     
 }

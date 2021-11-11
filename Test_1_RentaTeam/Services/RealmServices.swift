@@ -54,4 +54,15 @@ class RealmServices {
         }
     }
     
+    public func cleanAll() {
+        do {
+            let realm = try Realm()
+            try realm.write({
+                realm.deleteAll()
+            })
+        } catch let error as NSError {
+            print("Error in RealmServices - cleanAll: ", error)
+        }
+    }
+    
 }
