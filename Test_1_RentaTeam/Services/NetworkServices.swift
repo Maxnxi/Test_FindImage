@@ -23,7 +23,7 @@ class NetworkServices {
         let parameters: [String: Any] = [ "query": "nature",
                                           "page" : page,
                                           "per_page": 10 ]
-        AF.request(URL_PEXELS, method: .get, parameters: parameters, headers: headers).responseJSON { response in
+        AF.request(URL_PEXELS, method: .get, parameters: parameters, headers: headers).responseJSON { [weak self] response in
             print("request is - ", response.request?.urlRequest as Any)
             print("response is - ", response.value as Any)
             
@@ -34,7 +34,6 @@ class NetworkServices {
             }
             do {
                 let rspns = try JSONDecoder().decode( ResponseFromServer.self, from: data)
-                
                 let photos = rspns.photos
                 var photosArray: [PhotoModel] = []
                 photos.forEach({ photo in
@@ -58,20 +57,16 @@ class NetworkServices {
     }
     
     func downloadImage(url: URL, completion: @escaping(_ image: PhotoCache) -> ()) {
-        
-        
         if let cachedImage = imageCache.object(forKey: url.absoluteString as NSString) {
             completion(cachedImage)
         } else {
             let request = URLRequest(url: url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad, timeoutInterval: 20)
-            //print("My request is - ", request)
-    
-            let dataTask = URLSession.shared.dataTask(with: request) { data, response, err in
+            let dataTask = URLSession.shared.dataTask(with: request) { [weak self] data, response, err in
                 guard let imageData = data,
                 let image = UIImage(data: imageData) else { return }
                 let date = Date()
                 let photoCache = PhotoCache(image: image, dateOfDownloaded: date)
-                self.imageCache.setObject(photoCache, forKey: url.absoluteString as NSString)
+                self?.imageCache.setObject(photoCache, forKey: url.absoluteString as NSString)
                 
                 DispatchQueue.main.async {
                     completion(photoCache)
@@ -91,4 +86,5 @@ enum AppError: Error {
     case notCorrectUrl
     case guardError
     case failToFullArrayWithCoordinates
+    case offlineAndNoDataDownloaded
 }

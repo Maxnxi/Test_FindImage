@@ -13,9 +13,9 @@ class CellViewModel {
     let image: UIImage
     let id: String
     let photoGrapherName: String
-    let downloadDate: Date
+    let downloadDate: String
     
-    init(image: UIImage, id: String, photoGrapherName: String, downoladDate: Date) {
+    init(image: UIImage, id: String, photoGrapherName: String, downoladDate: String) {
         self.image = image
         self.id = id
         self.photoGrapherName = photoGrapherName

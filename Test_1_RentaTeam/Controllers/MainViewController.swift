@@ -9,13 +9,22 @@ import UIKit
 
 class MainViewController: UIViewController {
     
-    var pageOfImages: Int = 2
-    var photosCellViewModel: [CellViewModel] = []{
+    var pageOfImages: Int = 1
+    var photosCellViewModel: [CellViewModel] = [] {
         didSet {
-            collectionView.reloadData()
+            print("Setted")
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+                
+//                Timer.scheduledTimer(withTimeInterval: 5, repeats: true) { [weak self] _ in
+//                    self?.collectionView.reloadData()
+//                }
+            }
+            
         }
     }
     private let networkServices = NetworkServices()
+    private let adapterForGetDataService = AdapterForGetDataService()
     
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -28,23 +37,20 @@ class MainViewController: UIViewController {
     }
     
     func loadNewPhoto(page: Int = 1) {
-        networkServices.getDataFromServer(page: page) { [weak self] result in
+        adapterForGetDataService.getDataFromServerOrFromPhone(page: page) { [weak self] result in
             self?.pageOfImages += 1
             switch result {
-            case .success(let photosArr):
-                print("Succes")
-                photosArr.forEach { photo in
-                    guard let url = URL(string: photo.url),
-                          let idString = String(photo.id) as? String else { return }
-                    self?.networkServices.downloadImage(url: url) { photoCache in
-                        
-                        let cellViewModel = CellViewModel(image: photoCache.image, id: idString, photoGrapherName: photo.photographer, downoladDate: photoCache.dateOfDownloaded)
-                        
-                        self?.photosCellViewModel.append(cellViewModel)
-                    }
+            case .success(let photobaleModelArr):
+                guard let cellViewMArrBase = self?.photosCellViewModel else { return }
+                print("cellViewMArrBase.count is - ", cellViewMArrBase.count)
+                
+                PhotosInfoModelFactory.shared.convertPhotableModelToCellViewModel(photos: photobaleModelArr) { photos in
+                    let tmpCellVMArr = cellViewMArrBase + photos
+                    print("tmpCellVMArr.count is - ", tmpCellVMArr.count)
+                    self?.photosCellViewModel = tmpCellVMArr
                 }
             case .failure(let err):
-                print("Error", err)
+                print("Error - ", err)
             }
         }
     }

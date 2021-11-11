@@ -28,10 +28,14 @@ extension UIImage {
         // Actually do the resizing to the rect using the ImageContext stuff
         UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
         image.draw(in: rect)
-        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        
+        guard let newImage = UIGraphicsGetImageFromCurrentImageContext() else {
+            print("Error here")
+            return UIImage()
+        }
         UIGraphicsEndImageContext()
         
-        return newImage!
+        return newImage
     }
 }
 

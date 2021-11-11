@@ -23,9 +23,15 @@
 		058EB170273A5F050096F1D0 /* TZ in Resources */ = {isa = PBXBuildFile; fileRef = 058EB16F273A5F050096F1D0 /* TZ */; };
 		058EB176273A652F0096F1D0 /* MainViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058EB175273A652F0096F1D0 /* MainViewCell.swift */; };
 		058EB17A273A65FB0096F1D0 /* CellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058EB179273A65FB0096F1D0 /* CellViewModel.swift */; };
-		058EB17D273A67330096F1D0 /* Networkservices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058EB17C273A67330096F1D0 /* Networkservices.swift */; };
+		058EB17D273A67330096F1D0 /* NetworkServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058EB17C273A67330096F1D0 /* NetworkServices.swift */; };
 		058EB181273A7B660096F1D0 /* Description in Resources */ = {isa = PBXBuildFile; fileRef = 058EB180273A7B650096F1D0 /* Description */; };
 		058EB183273A7DD00096F1D0 /* PhotoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058EB182273A7DD00096F1D0 /* PhotoModel.swift */; };
+		05A763C6273BFCD3000FB3F4 /* CheckOnlineStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A763C5273BFCD3000FB3F4 /* CheckOnlineStatusService.swift */; };
+		05A763C8273BFDFC000FB3F4 /* AdapterForGetDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A763C7273BFDFC000FB3F4 /* AdapterForGetDataService.swift */; };
+		05A763CA273C00B2000FB3F4 /* SaveNLoadToPhoneImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A763C9273C00B2000FB3F4 /* SaveNLoadToPhoneImageService.swift */; };
+		05A763CC273C05F8000FB3F4 /* RealmServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A763CB273C05F8000FB3F4 /* RealmServices.swift */; };
+		05A763CE273C06F3000FB3F4 /* PhotoInfoRealmObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A763CD273C06F3000FB3F4 /* PhotoInfoRealmObject.swift */; };
+		05A763D0273C2798000FB3F4 /* PhotosInfoModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05A763CF273C2798000FB3F4 /* PhotosInfoModelFactory.swift */; };
 		36158D07B0E964DE1AB845F6 /* Pods_Test_1_RentaTeam_Test_1_RentaTeamUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 199FEC2149F8FBC0ABED6C8C /* Pods_Test_1_RentaTeam_Test_1_RentaTeamUITests.framework */; };
 		654970194DB31A5EDB64B989 /* Pods_Test_1_RentaTeamTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09F677072B34AF55844BD20D /* Pods_Test_1_RentaTeamTests.framework */; };
 		6860174472AA1F9F9C060A37 /* Pods_Test_1_RentaTeam.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54FF5C4CE5E1AFFBCF0E737C /* Pods_Test_1_RentaTeam.framework */; };
@@ -69,9 +75,15 @@
 		058EB16F273A5F050096F1D0 /* TZ */ = {isa = PBXFileReference; lastKnownFileType = text; path = TZ; sourceTree = "<group>"; };
 		058EB175273A652F0096F1D0 /* MainViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MainViewCell.swift; path = Test_1_RentaTeam/View/MainViewCell.swift; sourceTree = SOURCE_ROOT; };
 		058EB179273A65FB0096F1D0 /* CellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellViewModel.swift; sourceTree = "<group>"; };
-		058EB17C273A67330096F1D0 /* Networkservices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networkservices.swift; sourceTree = "<group>"; };
+		058EB17C273A67330096F1D0 /* NetworkServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkServices.swift; sourceTree = "<group>"; };
 		058EB180273A7B650096F1D0 /* Description */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Description; sourceTree = "<group>"; };
 		058EB182273A7DD00096F1D0 /* PhotoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoModel.swift; sourceTree = "<group>"; };
+		05A763C5273BFCD3000FB3F4 /* CheckOnlineStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckOnlineStatusService.swift; sourceTree = "<group>"; };
+		05A763C7273BFDFC000FB3F4 /* AdapterForGetDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdapterForGetDataService.swift; sourceTree = "<group>"; };
+		05A763C9273C00B2000FB3F4 /* SaveNLoadToPhoneImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveNLoadToPhoneImageService.swift; sourceTree = "<group>"; };
+		05A763CB273C05F8000FB3F4 /* RealmServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmServices.swift; sourceTree = "<group>"; };
+		05A763CD273C06F3000FB3F4 /* PhotoInfoRealmObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoInfoRealmObject.swift; sourceTree = "<group>"; };
+		05A763CF273C2798000FB3F4 /* PhotosInfoModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosInfoModelFactory.swift; sourceTree = "<group>"; };
 		09F677072B34AF55844BD20D /* Pods_Test_1_RentaTeamTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Test_1_RentaTeamTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		199FEC2149F8FBC0ABED6C8C /* Pods_Test_1_RentaTeam_Test_1_RentaTeamUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Test_1_RentaTeam_Test_1_RentaTeamUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		390F0DE574C40E9CA5385671 /* Pods-Test_1_RentaTeam-Test_1_RentaTeamUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Test_1_RentaTeam-Test_1_RentaTeamUITests.debug.xcconfig"; path = "Target Support Files/Pods-Test_1_RentaTeam-Test_1_RentaTeamUITests/Pods-Test_1_RentaTeam-Test_1_RentaTeamUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -226,6 +238,7 @@
 				058EB182273A7DD00096F1D0 /* PhotoModel.swift */,
 				0546B58C273A90DC001F1393 /* ResponseFromServer.swift */,
 				0546B590273AD455001F1393 /* PhotoCache.swift */,
+				05A763CD273C06F3000FB3F4 /* PhotoInfoRealmObject.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -233,7 +246,12 @@
 		058EB17B273A67230096F1D0 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				058EB17C273A67330096F1D0 /* Networkservices.swift */,
+				058EB17C273A67330096F1D0 /* NetworkServices.swift */,
+				05A763C5273BFCD3000FB3F4 /* CheckOnlineStatusService.swift */,
+				05A763C7273BFDFC000FB3F4 /* AdapterForGetDataService.swift */,
+				05A763C9273C00B2000FB3F4 /* SaveNLoadToPhoneImageService.swift */,
+				05A763CB273C05F8000FB3F4 /* RealmServices.swift */,
+				05A763CF273C2798000FB3F4 /* PhotosInfoModelFactory.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -502,8 +520,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				058EB17D273A67330096F1D0 /* Networkservices.swift in Sources */,
+				05A763CE273C06F3000FB3F4 /* PhotoInfoRealmObject.swift in Sources */,
+				058EB17D273A67330096F1D0 /* NetworkServices.swift in Sources */,
 				058EB17A273A65FB0096F1D0 /* CellViewModel.swift in Sources */,
+				05A763C8273BFDFC000FB3F4 /* AdapterForGetDataService.swift in Sources */,
 				058EB143273A5D600096F1D0 /* MainViewController.swift in Sources */,
 				0546B58F273ACA06001F1393 /* Extension_UIImage.swift in Sources */,
 				058EB176273A652F0096F1D0 /* MainViewCell.swift in Sources */,
@@ -511,7 +531,11 @@
 				058EB183273A7DD00096F1D0 /* PhotoModel.swift in Sources */,
 				058EB13F273A5D600096F1D0 /* AppDelegate.swift in Sources */,
 				0546B591273AD455001F1393 /* PhotoCache.swift in Sources */,
+				05A763CA273C00B2000FB3F4 /* SaveNLoadToPhoneImageService.swift in Sources */,
+				05A763CC273C05F8000FB3F4 /* RealmServices.swift in Sources */,
+				05A763C6273BFCD3000FB3F4 /* CheckOnlineStatusService.swift in Sources */,
 				058EB141273A5D600096F1D0 /* SceneDelegate.swift in Sources */,
+				05A763D0273C2798000FB3F4 /* PhotosInfoModelFactory.swift in Sources */,
 				0546B58B273A8086001F1393 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

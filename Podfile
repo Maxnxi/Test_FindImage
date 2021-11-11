@@ -7,7 +7,8 @@ target 'Test_1_RentaTeam' do
 
   # Pods for Test_1_RentaTeam
 pod 'Alamofire' , '~> 5.4'
-pod 'AlamofireImage' , '~> 4.1'  
+pod 'AlamofireImage' , '~> 4.1' 
+pod 'RealmSwift' 
 
   target 'Test_1_RentaTeamTests' do
     inherit! :search_paths

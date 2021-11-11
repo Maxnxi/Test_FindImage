@@ -19,9 +19,9 @@ class MainViewCell: UICollectionViewCell {
     
     func configureCell(viewModel: CellViewModel) {
         
-        let resizedImage = UIImage().resizeImage(image: viewModel.image, targetSize: CGSize(width: 150, height: 150))
+        //let resizedImage = UIImage().resizeImage(image: viewModel.image, targetSize: CGSize(width: 150, height: 150))
         
-        imageView.image = resizedImage
+        imageView.image = viewModel.image//resizedImage
         imageView.layer.cornerRadius = 20
         photoIdLabel.text = viewModel.id
         photoGrapherNameLabel.text = viewModel.photoGrapherName
