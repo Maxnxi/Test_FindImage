@@ -15,11 +15,12 @@ class MainViewController: UIViewController {
         didSet {
             print("Setted")
             DispatchQueue.main.async {
-                let previousCount = oldValue.count
-                let newCount = self.photosCellViewModel.count
-                let intArr = Array(previousCount...newCount)
-                let indexPaths = intArr.map { IndexPath(row: $0, section: 0) }
-                self.collectionView.reloadItems(at: indexPaths)
+//                let previousCount = oldValue.count-1
+//                let newCount = self.photosCellViewModel.count-1
+//                let intArr = Array(previousCount...newCount)
+//                let indexPaths = intArr.map { IndexPath(row: $0, section: 0) }
+//                self.collectionView.reloadItems(at: indexPaths)
+                self.collectionView.reloadData()
             }
         }
     }

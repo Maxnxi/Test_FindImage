@@ -22,7 +22,7 @@ class NetworkServices {
                                      "Authorization": "\(apiKey)" ]
         let parameters: [String: Any] = [ "query": "nature",
                                           "page" : page,
-                                          "per_page": 10 ]
+                                          "per_page": 50 ]
         AF.request(URL_PEXELS, method: .get, parameters: parameters, headers: headers).responseJSON { [weak self] response in
             print("request is - ", response.request?.urlRequest as Any)
             print("response is - ", response.value as Any)
