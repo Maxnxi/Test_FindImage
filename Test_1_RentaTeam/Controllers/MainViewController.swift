@@ -48,6 +48,7 @@ class MainViewController: UIViewController {
             case .success(let photobaleModelArr):
                 guard let cellViewMArrBase = self?.photosCellViewModel else { return }
                 print("cellViewMArrBase.count is - ", cellViewMArrBase.count)
+                
                 PhotosInfoModelFactory.shared.convertPhotableModelToCellViewModel(photos: photobaleModelArr) { photos in
                     let tmpCellVMArr = cellViewMArrBase + photos
                     print("tmpCellVMArr.count is - ", tmpCellVMArr.count)

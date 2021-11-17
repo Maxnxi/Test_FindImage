@@ -68,9 +68,9 @@ class NetworkServices {
                 let photoCache = PhotoCache(image: image, dateOfDownloaded: date)
                 self?.imageCache.setObject(photoCache, forKey: url.absoluteString as NSString)
                 
-                DispatchQueue.main.async {
+                //DispatchQueue.main.async {
                     completion(photoCache)
-                }
+                //}
             }
             dataTask.resume()
         }

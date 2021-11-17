@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import RealmSwift
 
 class PhotosInfoModelFactory {
     
@@ -18,11 +19,12 @@ class PhotosInfoModelFactory {
         var tmpPhotosInfoArr: [PhotoInfoRealmObject] = []
         for index in 0..<photoModels.count {
             let photoInfo = photoModels[index]
+            
             let photoInfoToRealm = PhotoInfoRealmObject()
             photoInfoToRealm.photoId = photoInfo.id
             photoInfoToRealm.photographerName = photoInfo.photographer
             photoInfoToRealm.avgColor = photoInfo.avgColor
-            photoInfoToRealm.photoName = String(photoInfo.url.suffix(7))
+            photoInfoToRealm.photoName = String(photoInfo.url.suffix(7)) + ".png"
             photoInfoToRealm.urlPath = photoInfo.url
             tmpPhotosInfoArr.append(photoInfoToRealm)
         }
@@ -54,6 +56,7 @@ class PhotosInfoModelFactory {
                 let idString = String(photo.id)
                 let dateDownloadString = String(dateOfDownloaded)
                 let cellViewModel = CellViewModel(image: imageTmp, id: idString, photoGrapherName: photo.photographer, downoladDate: dateDownloadString)
+                
                 tmpCellViewModel.append(cellViewModel)
                 if tmpCellViewModel.count == photos.count {
                     print("Completion in convertPhotableModelToCellViewModel")
@@ -70,6 +73,7 @@ class PhotosInfoModelFactory {
                         // bug here
                         let idString = String(photo.id)
                         let dateDownloadString = String(dateOfDownloaded)
+                        
                         let cellViewModel = CellViewModel(image: imageTmp, id: idString, photoGrapherName: photo.photographer, downoladDate: dateDownloadString)
                         tmpCellViewModel.append(cellViewModel)
                         if tmpCellViewModel.count == photos.count {

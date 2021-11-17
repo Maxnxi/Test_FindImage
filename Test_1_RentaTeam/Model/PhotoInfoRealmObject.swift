@@ -9,8 +9,8 @@ import Foundation
 import RealmSwift
 
 class PhotoInfoRealmObject: Object {
-    @Persisted(primaryKey: true) var _id: String
-    @Persisted var photoId: Int
+    @Persisted(primaryKey: true) var photoId: Int
+    //@Persisted var photoId: Int
     @Persisted var photographerName: String
     @Persisted var avgColor: String
     @Persisted var photoName: String

@@ -15,4 +15,5 @@ enum AppError: Error {
     case guardError
     case failToFullArrayWithCoordinates
     case offlineAndNoDataDownloaded
+    case errorInSaving
 }

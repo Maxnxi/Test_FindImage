@@ -30,15 +30,18 @@ class RealmServices {
         return false
     }
    
-    public func saveImagesInfo(imagesInfo: [PhotoInfoRealmObject]) {
+    public func saveImagesInfo(imagesInfo: [PhotoInfoRealmObject]/*, completion: @escaping(_ result: Bool) -> ()*/) {
         do {
             let realm = try Realm()
             try realm.write({
                 realm.deleteAll()
                 realm.add(imagesInfo)
             })
+            //try realm.commitWrite()
+            //completion(true)
         } catch let error as NSError {
             print("Error in RealmServices - loadImagesInfo: ", error)
+            //completion(false)
         }
     }
     
