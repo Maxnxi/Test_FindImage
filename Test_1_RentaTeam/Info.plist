@@ -21,5 +21,7 @@
 			</array>
 		</dict>
 	</dict>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>we need it</string>
 </dict>
 </plist>

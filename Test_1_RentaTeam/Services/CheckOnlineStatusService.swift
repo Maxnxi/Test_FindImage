@@ -11,6 +11,8 @@ class CheckOnlineStatusService {
     
     static let shared = CheckOnlineStatusService()
     
+    var isOnline: Bool?
+    
     private init() { }
     
     // make random fo fun
@@ -27,8 +29,10 @@ class CheckOnlineStatusService {
             self.checkServerPexelsIsOnline(url: url) { result in
                 if result == true {
                     completion(true)
+                    self.isOnline = true
                 } else {
                     completion(false)
+                    self.isOnline = false
                 }
             }
         }
