@@ -34,30 +34,68 @@ class MainViewController: UIViewController {
         super.viewDidLoad()
         collectionView.delegate = self
         collectionView.dataSource = self
+        //загрузить фото
         loadNewPhoto()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        RealmServices.shared.cleanAll()
+        //RealmServices.shared.cleanAll()
     }
     
     func loadNewPhoto(page: Int = 1) {
+        
         adapterForGetDataService.getDataFromServerOrFromPhone(page: page) { [weak self] result in
             self?.pageOfImages += 1
             switch result {
             case .success(let photobaleModelArr):
                 guard let cellViewMArrBase = self?.photosCellViewModel else { return }
                 print("cellViewMArrBase.count is - ", cellViewMArrBase.count)
-                
-                PhotosInfoModelFactory.shared.convertPhotableModelToCellViewModel(photos: photobaleModelArr) { photos in
+                print("photobaleModelArr.first is - ", photobaleModelArr.first?.dateOfDownloaded)
+                PhotosInfoModelFactory.shared.convertPhotableModelToCellViewModel(photos: photobaleModelArr) { [weak self] photos in
+                    // сохраняем в realm и на диск если статус online
+                    if CheckOnlineStatusService.shared.isOnline == true {
+                        print("CheckOnlineStatusService.shared.isOnline")
+                        self?.adapterForGetDataService.savePhotosToRealmAndDisk(cellViewModels: photos) { result in
+                            
+                        }
+                    } else {
+                        // если статус offline
+                        self?.createOfflineLabel()
+                    }
+                    
+                    
+                    // добавляем к массиву который выводится в коллекцию
                     let tmpCellVMArr = cellViewMArrBase + photos
                     print("tmpCellVMArr.count is - ", tmpCellVMArr.count)
                     self?.photosCellViewModel = tmpCellVMArr
                 }
             case .failure(let err):
                 print("Error - ", err)
+                
+                DispatchQueue.main.async {
+                    self?.createOfflineLabel()
+                }
             }
         }
+    }
+    
+    func createOfflineLabel() {
+        let rect = CGRect(x: 10, y: -10, width: 200, height: 200)
+        let label = UILabel(frame: rect)
+        label.text = "No Internet connection"
+        label.numberOfLines = 0
+        label.sizeThatFits(rect.size)
+        label.textColor = UIColor.white
+        label.isUserInteractionEnabled = true
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.offlineLabelTapped(_:)))
+        label.addGestureRecognizer(tapGesture)
+        self.view.superview?.addSubview(label)
+    }
+    
+    @objc func offlineLabelTapped(_ sender: UITapGestureRecognizer) {
+        print("Label tapped")
+        //self.photosCellViewModel.removeAll()
+        self.loadNewPhoto()
     }
     
 }
@@ -78,8 +116,10 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if (indexPath.row == photosCellViewModel.count - 2 ) {
-            loadNewPhoto(page: pageOfImages)
+        if CheckOnlineStatusService.shared.isOnline == true {
+            if (indexPath.row == photosCellViewModel.count - 4 ) {
+                loadNewPhoto(page: pageOfImages)
+            }
         }
     }
     

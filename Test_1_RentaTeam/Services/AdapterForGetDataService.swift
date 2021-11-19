@@ -12,68 +12,81 @@ class AdapterForGetDataService {
     
     private let networkServices = NetworkServices()
     
+    
     func getDataFromServerOrFromPhone(page: Int = 1, completion: @escaping(Swift.Result<[PhotableModel], AppError>) -> Void) {
-        
         CheckOnlineStatusService.shared.checkServerPexelsIsOnline { [weak self] result in
             switch result {
             case true:
+                // если сайт онлайн то - скачать новые фотки
                 print("Server pexels is online")
                 self?.networkServices.getDataFromServer(page: page) { result in
                     switch result {
                     case .success(let photosArr):
                         print("Succes")
-                        // saveToRealm once if is nothing in realm
-                        //if !RealmServices.shared.isPhotosInfoSaved {
-                        //print("RealmServices.shared.isPhotosInfoSaved == else - ", RealmServices.shared.isPhotosInfoSaved)
-                        let photoInfosToRealm = PhotosInfoModelFactory.shared.constructPhotoInfoRealmObject(photoModels: photosArr)
-                        RealmServices.shared.saveImagesInfo(imagesInfo: photoInfosToRealm)
-                        //save to disk
-                        photoInfosToRealm.forEach { [weak self] photoInfo in
-                            guard let url = URL(string: photoInfo.urlPath) else { return }
-                            self?.networkServices.downloadImage(url: url) { image in
-                                SaveNLoadToPhoneImageService.shared.saveImage(imageName: photoInfo.photoName, image: image.image)
-                                
-                                photoInfo.dateOfDownloaded = Int(image.dateOfDownloaded.timeIntervalSince1970)
-                            }
-                        }
-                        
-//                        { result in
-//                            switch result {
-//                            case true:
-//                                completion(.success(photosArr))
-//                            case false:
-//                                completion(.failure(AppError.errorInSaving))
-//                            }
-//                        }
-//                        } else {
-//                            print("RealmServices.shared.isPhotosInfoSaved == else - ", RealmServices.shared.isPhotosInfoSaved)
-//                        }
-                        if photoInfosToRealm.last?.dateOfDownloaded != nil {
-                            //RealmServices.shared.saveImagesInfo(imagesInfo: photoInfosToRealm)
-                            completion(.success(photosArr))
-                        }
-                        
+                        completion(.success(photosArr))
                     case .failure(let err):
+                        // если запрос не удался проверить Realm
                         print("Error getting info from server", err)
-                        if RealmServices.shared.isPhotosInfoSaved {
-                            guard let photosInfo = RealmServices.shared.loadImagesInfo() else { return }
-                            let photoOfflineModelArr = PhotosInfoModelFactory.shared.convertPhotoInfoRealmObjectToPhotoOfflineModel(photosInfos: photosInfo)
-                            completion(.success(photoOfflineModelArr))
-                        } else {
-                            completion(.failure(AppError.offlineAndNoDataDownloaded))
-                        }
+                        self?.getDataFromRealmAndDisk(completion: { result in
+                            switch result {
+                            case .success(let photosArr):
+                                completion(.success(photosArr))
+                            case .failure(let err):
+                                completion(.failure(err))
+                            }
+                        })
                     }
                 }
             case false:
+                // если сайт оффлайн то - достать фотки из базы и с диска
                 print("Server pexels is offline")
-                if RealmServices.shared.isPhotosInfoSaved {
-                    guard let photosInfo = RealmServices.shared.loadImagesInfo() else { return }
-                    let photoOfflineModelArr = PhotosInfoModelFactory.shared.convertPhotoInfoRealmObjectToPhotoOfflineModel(photosInfos: photosInfo)
-                    completion(.success(photoOfflineModelArr))
-                } else {
-                    completion(.failure(AppError.offlineAndNoDataDownloaded))
-                }
+                self?.getDataFromRealmAndDisk(completion: { result in
+                    switch result {
+                    case .success(let photosArr):
+                        print("Get data from disk - ", photosArr.count)
+                        completion(.success(photosArr))
+                    case .failure(let err):
+                        print("Can not get data from disk")
+                        completion(.failure(err))
+                    }
+                })
             }
+        }
+    }
+    
+    private func getDataFromRealmAndDisk(completion: @escaping(Swift.Result<[PhotableModel], AppError>) -> ()) {
+        // проверить есть ли данные в realm
+        if RealmServices.shared.isRealmEmpty == false {
+            print("RealmServices.shared.isRealmEmpty - ", RealmServices.shared.isRealmEmpty )
+            // получить данные из realm
+            guard let photosInfo = RealmServices.shared.loadImagesInfo() else { return }
+            print("photosInfo count - ", photosInfo.count)
+            // сформировать PhotableModel
+            var photoModelArray: [PhotoOfflineModel] = []
+            photosInfo.forEach { photoInfo in
+                let photoOfflineModel = PhotosInfoModelFactory.shared.convertPhotoInfoRealmObjectToPhotoOfflineModel(photoInfo: photoInfo)
+                photoModelArray.append(photoOfflineModel)
+            }
+            if photoModelArray.count == photosInfo.count {
+                completion(.success(photoModelArray))
+            }
+        } else {
+            print("RealmServices.shared.isRealmEmpty - ", RealmServices.shared.isRealmEmpty )
+            completion(.failure(AppError.offlineAndNoDataDownloaded))
+        }
+    }
+    
+    func savePhotosToRealmAndDisk(cellViewModels: [CellViewModel], completion: @escaping(_ result: Bool) -> ()) {
+        RealmServices.shared.cleanAll()
+        cellViewModels.forEach { cellViewModel in
+            // конвертировать cellViewModels  в RealmObject
+            let photoRealm = PhotosInfoModelFactory.shared.convertCellViewModelToRealmObject(photo: cellViewModel)
+            // сохранить в Realm
+            
+            RealmServices.shared.saveImageInfo(imageInfo: photoRealm)
+            // сохранить на диск
+            SaveNLoadToPhoneImageService.shared.saveImage(imageName: photoRealm.photoName, image: cellViewModel.image)
+            print("Photo saved - # ", cellViewModel.id)
         }
     }
     

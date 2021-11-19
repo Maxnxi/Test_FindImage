@@ -14,11 +14,13 @@ class CellViewModel {
     let id: String
     let photoGrapherName: String
     let downloadDate: String
+    let url: String
     
-    init(image: UIImage, id: String, photoGrapherName: String, downoladDate: String) {
+    init(image: UIImage, id: String, photoGrapherName: String, downoladDate: String, url: String) {
         self.image = image
         self.id = id
         self.photoGrapherName = photoGrapherName
         self.downloadDate = downoladDate
+        self.url = url
     }
 }

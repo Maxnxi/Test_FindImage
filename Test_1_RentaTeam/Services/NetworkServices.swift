@@ -15,6 +15,8 @@ let URL_PEXELS = "https://api.pexels.com/v1/search"
 
 class NetworkServices {
     
+    
+    
     var imageCache = NSCache<NSString, PhotoCache>()
     
     func getDataFromServer(page: Int = 1, completion: @escaping(Swift.Result<[PhotoModel], AppError>) -> Void) {
@@ -22,7 +24,7 @@ class NetworkServices {
                                      "Authorization": "\(apiKey)" ]
         let parameters: [String: Any] = [ "query": "nature",
                                           "page" : page,
-                                          "per_page": 50 ]
+                                          "per_page": 10 ]
         AF.request(URL_PEXELS, method: .get, parameters: parameters, headers: headers).responseJSON { [weak self] response in
             print("request is - ", response.request?.urlRequest as Any)
             print("response is - ", response.value as Any)
@@ -44,7 +46,9 @@ class NetworkServices {
                         let tmpUrl = photo.src.original
                         url = tmpUrl
                     }
-                    let tmpPhoto = PhotoModel(id: photo.id, photographer: photo.photographer, averageColor: photo.avgColor, url: url)
+                    let idString = String(describing: photo.id)
+                    
+                    let tmpPhoto = PhotoModel(id: idString, photographer: photo.photographer, averageColor: photo.avgColor, url: url)
                     photosArray.append(tmpPhoto)
                 })
                 if photosArray.count == photos.count {
@@ -56,23 +60,42 @@ class NetworkServices {
         }
     }
     
-    func downloadImage(url: URL, completion: @escaping(_ image: PhotoCache) -> ()) {
+    func downloadImage(url: URL, completion: @escaping(_ image: PhotoCache?) -> ()) {
         if let cachedImage = imageCache.object(forKey: url.absoluteString as NSString) {
+            print("Cached images")
             completion(cachedImage)
         } else {
-            let request = URLRequest(url: url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad, timeoutInterval: 20)
-            let dataTask = URLSession.shared.dataTask(with: request) { [weak self] data, response, err in
-                guard let imageData = data,
-                let image = UIImage(data: imageData) else { return }
-                let date = Date()
-                let photoCache = PhotoCache(image: image, dateOfDownloaded: date)
-                self?.imageCache.setObject(photoCache, forKey: url.absoluteString as NSString)
+            
+            // version #2
+            AF.request(url).responseImage { response in
+                //if case s
                 
-                //DispatchQueue.main.async {
+                switch response.result {
+                case .success(let image):
+                    let date = Date()
+                    let photoCache = PhotoCache(image: image, dateOfDownloaded: date)
                     completion(photoCache)
-                //}
+                case .failure(let err):
+                    print("Error in downloadImage - ", err)
+                    completion(nil)
+                
+                }
             }
-            dataTask.resume()
+            
+            // version #1
+//            let request = URLRequest(url: url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad, timeoutInterval: 20)
+//            let dataTask = URLSession.shared.dataTask(with: request) { [weak self] data, response, err in
+//                guard let imageData = data,
+//                let image = UIImage(data: imageData) else { return }
+//                let date = Date()
+//                let photoCache = PhotoCache(image: image, dateOfDownloaded: date)
+//                self?.imageCache.setObject(photoCache, forKey: url.absoluteString as NSString)
+//
+//                //DispatchQueue.main.async {
+//                    completion(photoCache)
+//                //}
+//            }
+//            dataTask.resume()
         }
     }
     
