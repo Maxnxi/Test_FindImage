@@ -136,6 +136,19 @@
                                 <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ndi-tq-SjZ">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <searchBar contentMode="redraw" searchBarStyle="minimal" placeholder="Enter text to search photo ..." translatesAutoresizingMaskIntoConstraints="NO" id="K38-PC-rrm">
+                                            <rect key="frame" x="0.0" y="3" width="414" height="44"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <textInputTraits key="textInputTraits"/>
+                                        </searchBar>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="K38-PC-rrm" firstAttribute="leading" secondItem="ndi-tq-SjZ" secondAttribute="leading" id="B97-xQ-48d"/>
+                                        <constraint firstAttribute="bottom" secondItem="K38-PC-rrm" secondAttribute="bottom" constant="3" id="K06-lc-OJW"/>
+                                        <constraint firstAttribute="trailing" secondItem="K38-PC-rrm" secondAttribute="trailing" id="TLc-R3-Iak"/>
+                                        <constraint firstItem="K38-PC-rrm" firstAttribute="top" secondItem="ndi-tq-SjZ" secondAttribute="top" constant="3" id="rTg-9g-Rvu"/>
+                                    </constraints>
                                 </collectionReusableView>
                             </collectionView>
                         </subviews>
