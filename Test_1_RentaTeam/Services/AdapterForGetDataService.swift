@@ -13,13 +13,13 @@ class AdapterForGetDataService {
     private let networkServices = NetworkServices()
     
     
-    func getDataFromServerOrFromPhone(page: Int = 1, completion: @escaping(Swift.Result<[PhotableModel], AppError>) -> Void) {
+    func getDataFromServerOrFromPhone(page: Int = 1, query: String, completion: @escaping(Swift.Result<[PhotableModel], AppError>) -> Void) {
         CheckOnlineStatusService.shared.checkServerPexelsIsOnline { [weak self] result in
             switch result {
             case true:
                 // если сайт онлайн то - скачать новые фотки
                 print("Server pexels is online")
-                self?.networkServices.getDataFromServer(page: page) { result in
+                self?.networkServices.getDataFromServer(page: page, query: query) { result in
                     switch result {
                     case .success(let photosArr):
                         print("Succes")
@@ -27,14 +27,7 @@ class AdapterForGetDataService {
                     case .failure(let err):
                         // если запрос не удался проверить Realm
                         print("Error getting info from server", err)
-                        self?.getDataFromRealmAndDisk(completion: { result in
-                            switch result {
-                            case .success(let photosArr):
-                                completion(.success(photosArr))
-                            case .failure(let err):
-                                completion(.failure(err))
-                            }
-                        })
+                        completion(.failure(err))
                     }
                 }
             case false:
@@ -82,7 +75,6 @@ class AdapterForGetDataService {
             // конвертировать cellViewModels  в RealmObject
             let photoRealm = PhotosInfoModelFactory.shared.convertCellViewModelToRealmObject(photo: cellViewModel)
             // сохранить в Realm
-            
             RealmServices.shared.saveImageInfo(imageInfo: photoRealm)
             // сохранить на диск
             SaveNLoadToPhoneImageService.shared.saveImage(imageName: photoRealm.photoName, image: cellViewModel.image)

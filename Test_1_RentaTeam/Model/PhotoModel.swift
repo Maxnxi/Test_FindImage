@@ -19,7 +19,6 @@ protocol PhotableModel {
 }
 
 class PhotoModel: PhotableModel {
-    
     var id: String
     var photographer: String
     var avgColor: String?
@@ -50,7 +49,6 @@ class PhotoOfflineModel: PhotableModel {
     init(id: String, photographer: String, /*averageColor: String,*/ photoName: String, url: String, dateOfDownload: Int, image: UIImage) {
         self.id = id
         self.photographer = photographer
-        //self.avgColor = averageColor
         self.photoName = photoName
         self.url = url
         self.dateOfDownloaded = dateOfDownload

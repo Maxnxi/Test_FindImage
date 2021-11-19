@@ -133,9 +133,25 @@
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
-                                <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ndi-tq-SjZ">
+                                <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="HeaderView" id="ndi-tq-SjZ" customClass="HeaderView" customModule="Test_1_RentaTeam" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <searchBar contentMode="redraw" searchBarStyle="minimal" text="nature" placeholder="Enter text to search photo ..." translatesAutoresizingMaskIntoConstraints="NO" id="K38-PC-rrm">
+                                            <rect key="frame" x="0.0" y="3" width="414" height="44"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" smartDashesType="no"/>
+                                        </searchBar>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="K38-PC-rrm" firstAttribute="leading" secondItem="ndi-tq-SjZ" secondAttribute="leading" id="B97-xQ-48d"/>
+                                        <constraint firstAttribute="bottom" secondItem="K38-PC-rrm" secondAttribute="bottom" constant="3" id="K06-lc-OJW"/>
+                                        <constraint firstAttribute="trailing" secondItem="K38-PC-rrm" secondAttribute="trailing" id="TLc-R3-Iak"/>
+                                        <constraint firstItem="K38-PC-rrm" firstAttribute="top" secondItem="ndi-tq-SjZ" secondAttribute="top" constant="3" id="rTg-9g-Rvu"/>
+                                    </constraints>
+                                    <connections>
+                                        <outlet property="searchBar" destination="K38-PC-rrm" id="CvZ-Rx-nCJ"/>
+                                    </connections>
                                 </collectionReusableView>
                             </collectionView>
                         </subviews>
@@ -245,7 +261,7 @@
                                 <rect key="frame" x="20" y="64" width="72" height="31"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="chevron.left" catalog="system" title=" Back"/>
+                                <buttonConfiguration key="configuration" style="gray" image="chevron.left" catalog="system" title=" Back"/>
                                 <connections>
                                     <action selector="backButtonWasPressed:" destination="jte-tg-mCD" eventType="touchUpInside" id="D4c-t0-p5w"/>
                                 </connections>
