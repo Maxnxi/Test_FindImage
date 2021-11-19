@@ -36,7 +36,6 @@ class RealmServices {
             do {
                 let realm = try Realm()
                 try realm.write({
-                    //realm.deleteAll()
                     realm.add(imageInfo)
                 })
             } catch let error as NSError {
@@ -45,31 +44,21 @@ class RealmServices {
     }
    
     // сохранить массив
-    public func saveImagesInfo(imagesInfo: [PhotoInfoRealmObject]/*, completion: @escaping(_ result: Bool) -> ()*/) {
+    public func saveImagesInfo(imagesInfo: [PhotoInfoRealmObject]) {
         var objectCount = 0
-
             do {
                 let realm = try Realm()
                 try realm.write({
                     realm.deleteAll()
-                    
                     imagesInfo.forEach { photoInfo in
                         realm.add(photoInfo)
                         print("Save object - #", objectCount)
                         objectCount += 1
                     }
-                    
-                    
-                    
                 })
-                //try realm.commitWrite()
-                //completion(true)
             } catch let error as NSError {
                 print("Error in RealmServices - loadImagesInfo: ", error)
-                //completion(false)
             }
-        
-        
     }
     
     public func loadImagesInfo() -> [PhotoInfoRealmObject]? {
@@ -85,6 +74,12 @@ class RealmServices {
     }
     
     public func cleanAll() {
+        // удалить с диска
+        guard let currentRealmObjects = self.loadImagesInfo() else { return }
+        currentRealmObjects.forEach({ realmObject in
+            SaveNLoadToPhoneImageService.shared.deleteImageFromDisk(fileName: realmObject.photoName)
+        })
+        // удалить из Realm
         do {
             let realm = try Realm()
             try realm.write({

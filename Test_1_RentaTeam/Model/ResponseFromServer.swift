@@ -9,7 +9,7 @@ import Foundation
 
 struct ResponseFromServer: Codable {
     let page, perPage: Int
-    let photos: [PhotoFromServer]
+    let photos: [PhotoFromServer]?
     let totalResults: Int
     let nextPage: String
 

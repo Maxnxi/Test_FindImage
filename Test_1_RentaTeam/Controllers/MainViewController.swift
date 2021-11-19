@@ -10,16 +10,20 @@ import UIKit
 
 class MainViewController: UIViewController {
     
+    var infoLabel: UILabel?
+    var queryTmp: String = "nature"
     var pageOfImages: Int = 1
     var photosCellViewModel: [CellViewModel] = [] {
         didSet {
             print("Setted")
             DispatchQueue.main.async {
-//                let previousCount = oldValue.count-1
-//                let newCount = self.photosCellViewModel.count-1
+                // version #2
+//                let previousCount = oldValue.count-1 ?? 0
+//                let newCount = self.photosCellViewModel.count-1 ?? 0
 //                let intArr = Array(previousCount...newCount)
 //                let indexPaths = intArr.map { IndexPath(row: $0, section: 0) }
 //                self.collectionView.reloadItems(at: indexPaths)
+                // version #1
                 self.collectionView.reloadData()
             }
         }
@@ -35,54 +39,76 @@ class MainViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         //загрузить фото
-        loadNewPhoto()
+        loadNewPhoto(query: queryTmp)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        //RealmServices.shared.cleanAll()
+        // for testing purposes
+        // RealmServices.shared.cleanAll()
     }
     
-    func loadNewPhoto(page: Int = 1) {
-        
-        adapterForGetDataService.getDataFromServerOrFromPhone(page: page) { [weak self] result in
-            self?.pageOfImages += 1
-            switch result {
-            case .success(let photobaleModelArr):
-                guard let cellViewMArrBase = self?.photosCellViewModel else { return }
-                print("cellViewMArrBase.count is - ", cellViewMArrBase.count)
-                print("photobaleModelArr.first is - ", photobaleModelArr.first?.dateOfDownloaded)
-                PhotosInfoModelFactory.shared.convertPhotableModelToCellViewModel(photos: photobaleModelArr) { [weak self] photos in
-                    // сохраняем в realm и на диск если статус online
-                    if CheckOnlineStatusService.shared.isOnline == true {
-                        print("CheckOnlineStatusService.shared.isOnline")
-                        self?.adapterForGetDataService.savePhotosToRealmAndDisk(cellViewModels: photos) { result in
-                            
+    func loadNewPhoto(page: Int = 1, query: String, typeOfQuery: TypeOfLoading = .additionalQuery) {
+        DispatchQueue.main.async {
+            self.infoLabel?.text = ""
+            self.infoLabel?.isHidden = true
+        }
+        DispatchQueue.global().async {
+            self.adapterForGetDataService.getDataFromServerOrFromPhone(page: page, query: query) { [weak self] result in
+                self?.pageOfImages += 1
+                switch result {
+                case .success(let photobaleModelArr):
+                    guard let cellViewMArrBase = self?.photosCellViewModel else { return }
+                    print("cellViewMArrBase.count is - ", cellViewMArrBase.count)
+                    print("photobaleModelArr.first is - ", photobaleModelArr.first?.dateOfDownloaded as Any)
+                    PhotosInfoModelFactory.shared.convertPhotableModelToCellViewModel(photos: photobaleModelArr) { [weak self] photos in
+                        // сохраняем в realm и на диск если статус online
+                        if CheckOnlineStatusService.shared.isOnline == true {
+                            print("CheckOnlineStatusService.shared.isOnline")
+                            self?.adapterForGetDataService.savePhotosToRealmAndDisk(cellViewModels: photos) { result in
+                            }
+                        } else {
+                            // если статус offline
+                            self?.createLabel(type: .noInternetConnection)
                         }
-                    } else {
-                        // если статус offline
-                        self?.createOfflineLabel()
+                        // добавляем в массив который выводится в коллекцию
+                        switch typeOfQuery {
+                        case .newQuery:
+                            // обновляем массив
+                            self?.photosCellViewModel = []
+                            self?.photosCellViewModel = photos
+                        case .additionalQuery:
+                            // добавляем к массиву который выводится в коллекцию
+                            let tmpCellVMArr = cellViewMArrBase + photos
+                            print("tmpCellVMArr.count is - ", tmpCellVMArr.count)
+                            self?.photosCellViewModel = tmpCellVMArr
+                        }
                     }
-                    
-                    
-                    // добавляем к массиву который выводится в коллекцию
-                    let tmpCellVMArr = cellViewMArrBase + photos
-                    print("tmpCellVMArr.count is - ", tmpCellVMArr.count)
-                    self?.photosCellViewModel = tmpCellVMArr
-                }
-            case .failure(let err):
-                print("Error - ", err)
-                
-                DispatchQueue.main.async {
-                    self?.createOfflineLabel()
+                case .failure(let err):
+                    print("Error - ", err)
+                    DispatchQueue.main.async {
+                        if err == .noPhotoOnServer {
+                            self?.createLabel(type: .noPhotosOnServer)
+                            self?.photosCellViewModel = []
+                        } else {
+                            self?.createLabel(type: .noInternetConnection)
+                        }
+                    }
                 }
             }
         }
     }
     
-    func createOfflineLabel() {
-        let rect = CGRect(x: 10, y: -10, width: 200, height: 200)
-        let label = UILabel(frame: rect)
+    func createLabel(type: TypeOfLabel) {
+        let rect = CGRect(x: 10, y: 0, width: 200, height: 200)
+        self.infoLabel = UILabel(frame: rect)
+        guard let label = infoLabel else { return }
+        label.isHidden = false
+        if type == .noInternetConnection {
         label.text = "No Internet connection"
+        } else if type == .noPhotosOnServer {
+            label.text = "No photos on server of that kind"
+            label.frame = CGRect(x: 20, y: 100, width: UIScreen.main.bounds.width, height: 50)
+        }
         label.numberOfLines = 0
         label.sizeThatFits(rect.size)
         label.textColor = UIColor.white
@@ -94,11 +120,10 @@ class MainViewController: UIViewController {
     
     @objc func offlineLabelTapped(_ sender: UITapGestureRecognizer) {
         print("Label tapped")
-        //self.photosCellViewModel.removeAll()
-        self.loadNewPhoto()
     }
     
 }
+
 
 extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
@@ -117,8 +142,8 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if CheckOnlineStatusService.shared.isOnline == true {
-            if (indexPath.row == photosCellViewModel.count - 4 ) {
-                loadNewPhoto(page: pageOfImages)
+            if (indexPath.row == photosCellViewModel.count - 24 ) {
+                    loadNewPhoto(page: pageOfImages, query: queryTmp)
             }
         }
     }
@@ -130,6 +155,18 @@ extension MainViewController: UICollectionViewDelegate, UICollectionViewDataSour
         self.present(viewController, animated: true, completion: nil)
     }
     
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderView.reuseIdentifier, for: indexPath) as? HeaderView else { return UICollectionReusableView() }
+                header.configureView()
+            header.searchBar.delegate = self
+                return header
+        default:
+            print("smth else")
+        }
+      return UICollectionReusableView()
+        }
 }
 
 extension MainViewController: UICollectionViewDelegateFlowLayout {
@@ -149,5 +186,14 @@ extension MainViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 20
+    }
+}
+
+extension MainViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        print("SEARCH - ", searchBar.text)
+        guard let query = searchBar.text else { return }
+        self.queryTmp = query
+        self.loadNewPhoto(query: query, typeOfQuery: .newQuery)
     }
 }
