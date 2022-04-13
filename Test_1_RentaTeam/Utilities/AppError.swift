@@ -16,4 +16,5 @@ enum AppError: Error {
     case failToFullArrayWithCoordinates
     case offlineAndNoDataDownloaded
     case errorInSaving
+    case noPhotoOnServer
 }

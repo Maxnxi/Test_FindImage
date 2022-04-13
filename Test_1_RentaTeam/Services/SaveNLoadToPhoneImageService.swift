@@ -19,22 +19,8 @@ class SaveNLoadToPhoneImageService {
     }
     
     func saveImage(imageName: String, image: UIImage) {
-         
-        //        guard let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
-//        let fileName = imageName + ".png"
-//        let fileURL = documentsDirectory.appendingPathComponent(fileName)
-//        guard let data = image.jpegData(compressionQuality: 1) else { return }
         guard let data = image.pngData(),
               let filePath = filePath(forKey: imageName) else { return }
-// проверка на повтор имени
-        //        if FileManager.default.fileExists(atPath: fileURL.path) {
-//            do {
-//                try FileManager.default.removeItem(atPath: fileURL.path)
-//                print("Removed old image")
-//            } catch let removeError {
-//                print("couldn't remove file at path", removeError)
-//            }
-//        }
         do {
             print("save image to FileManager")
             try data.write(to: filePath, options: .atomic)
@@ -44,23 +30,20 @@ class SaveNLoadToPhoneImageService {
     }
     
     func loadImageFromDiskWith(fileName: String) -> UIImage? {
-        
         guard let filePath = filePath(forKey: fileName),
               let fileData = FileManager.default.contents(atPath: filePath.path) else { return nil }
-        
-//        let documentDirectory = FileManager.SearchPathDirectory.documentDirectory
-//        let userDomainMask = FileManager.SearchPathDomainMask.userDomainMask
-//        let paths = NSSearchPathForDirectoriesInDomains(documentDirectory, userDomainMask, true)
-        
-//        if let dirPath = paths.first {
-//            let imageUrl = URL(fileURLWithPath: dirPath).appendingPathComponent(fileName)
-//            let image = UIImage(contentsOfFile: imageUrl.path)
-//            return image
-//        }
-        
         let image = UIImage(data: fileData)
-        
         return image
+    }
+    
+    func deleteImageFromDisk(fileName: String) {
+        guard let filePath = filePath(forKey: fileName) else { return }
+        do {
+            try FileManager.default.removeItem(atPath: filePath.path)
+            print("Removed old image")
+        } catch let removeError {
+            print("couldn't remove file at path", removeError)
+        }
     }
     
 }

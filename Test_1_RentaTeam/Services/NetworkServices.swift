@@ -15,28 +15,33 @@ let URL_PEXELS = "https://api.pexels.com/v1/search"
 
 class NetworkServices {
     
-    
-    
+
     var imageCache = NSCache<NSString, PhotoCache>()
     
-    func getDataFromServer(page: Int = 1, completion: @escaping(Swift.Result<[PhotoModel], AppError>) -> Void) {
+    func getDataFromServer(page: Int = 1, query: String, completion: @escaping(Swift.Result<[PhotoModel], AppError>) -> Void) {
         let headers: HTTPHeaders = [ "Content-Type": "application/json",
                                      "Authorization": "\(apiKey)" ]
-        let parameters: [String: Any] = [ "query": "nature",
+        let parameters: [String: Any] = [ "query": query.lowercased(),
                                           "page" : page,
                                           "per_page": 10 ]
-        AF.request(URL_PEXELS, method: .get, parameters: parameters, headers: headers).responseJSON { [weak self] response in
+        AF.request(URL_PEXELS, method: .get, parameters: parameters, headers: headers).responseJSON { response in
             print("request is - ", response.request?.urlRequest as Any)
             print("response is - ", response.value as Any)
             
             guard let data = response.data as? Data else {
                 print("Error in Alamofire.request at getAdsFromServer")
-                return
-                completion(.failure(AppError.noDataProvided))
+                return completion(.failure(AppError.noDataProvided))
             }
             do {
                 let rspns = try JSONDecoder().decode( ResponseFromServer.self, from: data)
-                let photos = rspns.photos
+                if rspns.totalResults == 0 {
+                    print("rspns.totalResults == 0")
+                    completion(.failure(AppError.noPhotoOnServer))
+                }
+                guard let photos = rspns.photos else {
+                    print("photos = rspns.photos")
+                    return completion(.failure(AppError.noPhotoOnServer))
+                }
                 var photosArray: [PhotoModel] = []
                 photos.forEach({ photo in
                     var url: String = ""
@@ -55,7 +60,10 @@ class NetworkServices {
                     completion(.success(photosArray))
                 }
             } catch {
+                print("Catch is here")
                 // do catch
+                // временно
+                completion(.failure(AppError.noPhotoOnServer))
             }
         }
     }
@@ -65,11 +73,7 @@ class NetworkServices {
             print("Cached images")
             completion(cachedImage)
         } else {
-            
-            // version #2
             AF.request(url).responseImage { response in
-                //if case s
-                
                 switch response.result {
                 case .success(let image):
                     let date = Date()
@@ -78,24 +82,8 @@ class NetworkServices {
                 case .failure(let err):
                     print("Error in downloadImage - ", err)
                     completion(nil)
-                
                 }
             }
-            
-            // version #1
-//            let request = URLRequest(url: url, cachePolicy: URLRequest.CachePolicy.returnCacheDataElseLoad, timeoutInterval: 20)
-//            let dataTask = URLSession.shared.dataTask(with: request) { [weak self] data, response, err in
-//                guard let imageData = data,
-//                let image = UIImage(data: imageData) else { return }
-//                let date = Date()
-//                let photoCache = PhotoCache(image: image, dateOfDownloaded: date)
-//                self?.imageCache.setObject(photoCache, forKey: url.absoluteString as NSString)
-//
-//                //DispatchQueue.main.async {
-//                    completion(photoCache)
-//                //}
-//            }
-//            dataTask.resume()
         }
     }
     

@@ -10,7 +10,6 @@ import RealmSwift
 
 class PhotoInfoRealmObject: Object {
     @Persisted(primaryKey: true) var photoId: String
-    //@Persisted var photoId: String
     @Persisted var photographerName: String
     @Persisted var avgColor: String
     @Persisted var photoName: String
